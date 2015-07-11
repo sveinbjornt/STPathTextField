@@ -2,36 +2,59 @@
     STPathTextField.h
 
     Created by Sveinbjorn Thordarson on 6/27/08.
-    Copyright (C) 2003-2012 Sveinbjorn Thordarson. All rights reserved.
+    Copyright (C) 2008-2015 Sveinbjorn Thordarson. All rights reserved.
 	
-	
-	See STPathTextField.m for description of the functionality of
-	this subclass of NSTextField.
+    ************************ ABOUT *****************************
 
-	************************ LICENSE ***************************
+    STPathTextField is a subclass of NSTextField for receiving
+    and displaying a file system path.  It supports path validation
+    and autocompletion.  Autocompletion can use "web browser" style -
+    e.g. expansion and selection, or shell autocompletion style -
+    tab-expansion.
 
-	Permission is hereby granted, free of charge, to any person
-	obtaining a copy of this software and associated documentation
-	files (the "Software"), to deal in the Software without
-	restriction, including without limitation the rights to use,
-	copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the
-	Software is furnished to do so, subject to the following
-	conditions:
+    To use STPathTextField, just add a text field to a window in
+    Interface Builder, and set its class to STPathTextField.
 
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
+    See code on how to set the settings for the text field.
+    Defaults are the following:
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-	OTHER DEALINGS IN THE SOFTWARE.
-	
-	**************************************************************
+    autocompleteStyle = STNoAutocomplete;
+    colorInvalidPath = YES;
+    foldersAreValid = NO;
+    expandTildeInPath = YES;
+
+    There are three settings for autocompleteStyle
+
+    enum
+    {
+        STNoAutocomplete = 0,
+        STShellAutocomplete = 1,
+        STBrowserAutocomplete = 2
+    };
+ 
+
+    # BSD License
+    # Redistribution and use in source and binary forms, with or without
+    # modification, are permitted provided that the following conditions are met:
+    #     * Redistributions of source code must retain the above copyright
+    #       notice, this list of conditions and the following disclaimer.
+    #     * Redistributions in binary form must reproduce the above copyright
+    #       notice, this list of conditions and the following disclaimer in the
+    #       documentation and/or other materials provided with the distribution.
+    #     * Neither the name of Sveinbjorn Thordarson nor that of any other
+    #       contributors may be used to endorse or promote products
+    #       derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    # DISCLAIMED. IN NO EVENT SHALL  BE LIABLE FOR ANY
+    # DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    # LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
