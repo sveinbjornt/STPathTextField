@@ -33,240 +33,189 @@
 
 @implementation STPathTextField
 
-/*******************************************
- Set all field settings to their default value
- ********************************************/
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self setDefaults];
+    }
+    return self;
+}
 
-- (void)awakeFromNib
+- (instancetype)initWithFrame:(NSRect)frameRect
+{
+    self = [super initWithFrame:frameRect];
+    if (self) {
+        [self setDefaults];
+    }
+    return self;
+}
+
+- (void)setDefaults
 {
     // default settings for the text field
-    autocompleteStyle = STShellAutocomplete;
-    colorInvalidPath = YES;
-    foldersAreValid = NO;
-    expandTildeInPath = YES;
+    _autocompleteStyle = STShellAutocomplete;
+    _colorInvalidPath = YES;
+    _foldersAreValid = NO;
+    _expandTildeInPath = YES;
     
-    [self registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
 }
 
-/*******************************************
- This will set the value of the text field
- to the file path of the dragged file
- This will NOT work if the field is being edited,
- since the receiver will then be the text editor
- See http://developer.apple.com/documentation/Cocoa/Conceptual/TextEditing/Tasks/HandlingDrops.html
- ********************************************/
+#pragma mark -
 
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender 
-{    
-    if ([[[sender draggingPasteboard] types] containsObject:NSFilenamesPboardType] ) 
-        return NSDragOperationLink;
-    
-    return NSDragOperationNone;
-}
-
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender 
-{
-    if ([[[sender draggingPasteboard] types] containsObject:NSFilenamesPboardType]) 
-    {
-        NSArray *files = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-        [self setStringValue: [files objectAtIndex: 0]];
-        return YES;
-    }
-    return NO;
-}
-
-/*******************************************
- Tell us whether the path in the path text 
- field is valid
- *********************************************/
-
--(BOOL)hasValidPath
+- (BOOL)hasValidPath
 {
     BOOL isDir;
-    NSString *path = expandTildeInPath ? [[self stringValue] stringByExpandingTildeInPath] : [self stringValue];
-    return ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir] && (!(isDir && !foldersAreValid)));
+    NSString *path = self.expandTildeInPath ? [[self stringValue] stringByExpandingTildeInPath] : [self stringValue];
+    return ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && (!(isDir && !self.foldersAreValid)));
 }
 
-/*******************************************
- If we're autocompleting browser-style, we
- perform the expansion and selection every time
- a key is released, unless it's navigation or deletion
- ********************************************/
+#pragma mark -
 
--(void)keyUp:(NSEvent *)event
+- (void)keyUp:(NSEvent *)event
 {
-    int keyCode = [ [event characters] characterAtIndex: 0];
+    unichar keyCode = [[event characters] characterAtIndex:0];
     
-    if (autocompleteStyle == STBrowserAutocomplete)
-    {
-        if (keyCode != 13 && keyCode != 9 && keyCode != 127 && keyCode != NSLeftArrowFunctionKey && keyCode != NSRightArrowFunctionKey) 
-            [self autoComplete: self];
+    if (self.autocompleteStyle == STBrowserAutocomplete) {
+        if (keyCode != 13 && keyCode != 9 && keyCode != 127 && keyCode != NSLeftArrowFunctionKey && keyCode != NSRightArrowFunctionKey) {
+            [self autoComplete:self];
+        }
     }
+    
     [super keyUp:event];
     [self updateTextColoring];
 }
 
-
-/*******************************************
- Changed string value means we update coloring
- ********************************************/
-
 - (void)setStringValue:(NSString *)aString
 {
-    [super setStringValue: aString];
-    [self textDidChange: NULL];
+    [super setStringValue:aString];
+    [self textChanged];
 }
 
-/*******************************************
- If coloring is enabled, we set text color
- to red if invalid path, black if valid
- ********************************************/
--(void)updateTextColoring
+- (void)updateTextColoring
 {
-    if (!colorInvalidPath)
+    if (!self.colorInvalidPath) {
         return;
+    }
     
     NSColor *textColor = [self hasValidPath] ? [NSColor blackColor]: [NSColor redColor];
     [self setTextColor: textColor];
 }
 
-/*******************************************
- This is the function that does the actual
- autocompletion.
- ********************************************/
-
--(int)autoComplete: (id)sender
+- (BOOL)autoComplete:(id)sender
 {
-    NSString *autocompletedPath = NULL;
     NSString *path = [self stringValue];
-    char firstchar;
-    int dlen, len = [path length];
-    BOOL isDir;
+    NSUInteger len = [path length];
     
     // let's not waste time if the string is empty
-    if (len == 0)
-        return 0;
+    if (len == 0) {
+        return NO;
+    }
     
     // we only try to expand if this looks like a real path, i.e. starts with / or ~
-    firstchar = [path characterAtIndex: 0];
-    if (firstchar != '/' && firstchar != '~')
-        return 0;
+    unichar firstchar = [path characterAtIndex: 0];
+    if (firstchar != '/' && firstchar != '~') {
+        return NO;
+    }
     
     // expand tilde to home dir
-    if (firstchar == '~' && expandTildeInPath)
-    {
+    if (firstchar == '~' && self.expandTildeInPath) {
         path = [[self stringValue] stringByExpandingTildeInPath];
         len = [path length];
     }
     
     // get suggestion for autocompletion
-    [path completePathIntoString: &autocompletedPath caseSensitive: YES matchesIntoArray: NULL filterTypes: NULL];
+    NSString *autocompletedPath = nil;
+    [path completePathIntoString:&autocompletedPath caseSensitive:YES matchesIntoArray:nil filterTypes:nil];
     
     // stop if no suggestions
-    if (autocompletedPath == NULL)
-        return 0;
+    if (autocompletedPath == nil) {
+        return NO;
+    }
     
     // stop if suggestion is current value and current value is a valid path
-    if ([autocompletedPath isEqualToString: [self stringValue]] && 
-        [[NSFileManager defaultManager] fileExistsAtPath: autocompletedPath isDirectory: &isDir] && 
-        !(isDir && !foldersAreValid)) 
-        return 0;
+    BOOL isDir;
+    if ([autocompletedPath isEqualToString:[self stringValue]] &&
+        [[NSFileManager defaultManager] fileExistsAtPath:autocompletedPath isDirectory:&isDir] &&
+        !(isDir && !self.foldersAreValid)) {
+        return NO;
+    }
     
     // replace field string with autocompleted string
     [self setStringValue: autocompletedPath];
     
     // if browser style autocompletion is enabled
     // we select the autocomplete extension to the previous string
-    if (autocompleteStyle == STBrowserAutocomplete)
-    {
-        dlen = [autocompletedPath length];
-        [[self currentEditor] setSelectedRange: NSMakeRange(len, dlen)];
+    if (self.autocompleteStyle == STBrowserAutocomplete) {
+        NSUInteger dlen = [autocompletedPath length];
+        [[self currentEditor] setSelectedRange:NSMakeRange(len, dlen)];
     }
     
-    return 1;
+    return YES;
 }
 
 // we make sure coloring is correct whenever text changes
 - (void)textDidChange:(NSNotification *)aNotification
 {
-    if (colorInvalidPath)
-        [self updateTextColoring];
-
-    if ([self delegate] && [[self delegate] respondsToSelector: @selector(controlTextDidChange:)])
-        [[self delegate] performSelector: @selector(controlTextDidChange:) withObject: nil];
+    [self textChanged];
 }
 
-
-/*******************************************
- We intercept tab inserts and try to autocomplete
- ********************************************/
+- (void)textChanged
+{
+    if (self.colorInvalidPath) {
+        [self updateTextColoring];
+    }
+    
+    if ([self delegate] && [[self delegate] respondsToSelector:@selector(controlTextDidChange:)]) {
+        [[self delegate] performSelector: @selector(controlTextDidChange:) withObject:nil];
+    }
+}
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)aSelector
-{    
+{
     // intercept tab
-    if (aSelector == @selector(insertTab:) && autocompleteStyle == STShellAutocomplete)
-    {
+    if (aSelector == @selector(insertTab:) && self.autocompleteStyle == STShellAutocomplete) {
+        
         NSString *string = [self stringValue];
         BOOL result = NO;
         NSRange selectedRange = [aTextView selectedRange];
         
         // we only do tab autocomplete if the insertion point is at the end of the field
         // and if selection in the field is empty
-        if (selectedRange.length == 0 && selectedRange.location == [[self stringValue] length])
+        if (selectedRange.length == 0 && selectedRange.location == [[self stringValue] length]) {
             result = [self autoComplete: self];
+        }
         
         // we only let the user tab out of the field if it's empty or has valid path
-        if ([[self stringValue] length] == 0 || ([self hasValidPath] && [string isEqualToString: [self stringValue]]))
+        if ([[self stringValue] length] == 0 || ([self hasValidPath] && [string isEqualToString: [self stringValue]])) {
             return NO;
+        }
         
         return result;
     }
-    return false;
+    return NO;
 //    return [super textView: aTextView doCommandBySelector: aSelector];
 }
 
-/*******************************************
- Accessor functions for settings
- ********************************************/
+#pragma mark - Dragging
 
--(void)setAutocompleteStyle: (int)style
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-    autocompleteStyle = style;
+    if ([[[sender draggingPasteboard] types] containsObject:NSFilenamesPboardType]) {
+        return NSDragOperationLink;
+    }
+    return NSDragOperationNone;
 }
 
--(int)autocompleteStyle
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-    return autocompleteStyle;
-}
-
--(void)setColorInvalidPath: (BOOL)val
-{
-    colorInvalidPath = val;
-}
-
--(BOOL)colorInvalidPath
-{
-    return colorInvalidPath;
-}
-
--(void)setFoldersAreValid: (BOOL)val
-{
-    foldersAreValid = val;
-}
-
--(BOOL)foldersAreValid
-{
-    return foldersAreValid;
-}
-
--(void)setExpandTildeInPath: (BOOL)val
-{
-    expandTildeInPath = val;
-}
-
--(BOOL)expandTildeInPath
-{
-    return expandTildeInPath;
+    if ([[[sender draggingPasteboard] types] containsObject:NSFilenamesPboardType]) {
+        NSArray *files = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+        [self setStringValue:files[0]];
+        return YES;
+    }
+    return NO;
 }
 
 @end

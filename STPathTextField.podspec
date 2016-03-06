@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'BSD' }
   s.author       = { "Sveinbjorn Thordarson" => "sveinbjornt@gmail.com" }
   s.osx.deployment_target = "10.6"
-  s.source       = { :git => "https://github.com/sveinbjornt/STPathTextField.git", :tag => "1.0.0" }
+  s.source       = { :git => "https://github.com/sveinbjornt/STPathTextField.git", :tag => "1.0.1" }
   s.source_files = "STPathTextField.{h,m}"
   s.exclude_files = "STPathTextFieldExample"
   s.public_header_files = "STPathTextField.h"

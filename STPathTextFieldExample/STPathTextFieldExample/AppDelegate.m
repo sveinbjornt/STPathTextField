@@ -16,7 +16,6 @@
 
 @implementation AppDelegate
 
-
 - (void)awakeFromNib {
     
     [self.shellStylePathTextField setAutocompleteStyle:STShellAutocomplete];
@@ -28,8 +27,7 @@
     [self.noAutocompletePathTextField setAutocompleteStyle:STNoAutocomplete];
     [self.noAutocompletePathTextField setStringValue:@"/some/path/to/nowhere"];
     
-//    [self.shellStylePathTextField setStringValue:@"~/"];
-
+    [self.shellStylePathTextField setStringValue:@"~/"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {

@@ -41,8 +41,11 @@
 		F4F103821B517F0600BCAD40 = {
 			isa = PBXGroup;
 			children = (
+				F4F103AE1B517F6200BCAD40 /* LICENSE.txt */,
+				F4F103AF1B517F6200BCAD40 /* README.md */,
+				F4F103B21B517F6200BCAD40 /* STPathTextField.podspec */,
 				F4F103B71B517F6800BCAD40 /* STPathTextField */,
-				F4F1038D1B517F0600BCAD40 /* STPathTextFieldExample */,
+				F4F1038D1B517F0600BCAD40 /* Example APp */,
 				F4F1038C1B517F0600BCAD40 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,7 +58,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F4F1038D1B517F0600BCAD40 /* STPathTextFieldExample */ = {
+		F4F1038D1B517F0600BCAD40 /* Example APp */ = {
 			isa = PBXGroup;
 			children = (
 				F4F103901B517F0600BCAD40 /* AppDelegate.h */,
@@ -64,6 +67,7 @@
 				F4F1038F1B517F0600BCAD40 /* Info.plist */,
 				F4F103931B517F0600BCAD40 /* main.m */,
 			);
+			name = "Example APp";
 			path = STPathTextFieldExample;
 			sourceTree = "<group>";
 		};
@@ -72,9 +76,6 @@
 			children = (
 				F4F103B01B517F6200BCAD40 /* STPathTextField.h */,
 				F4F103B11B517F6200BCAD40 /* STPathTextField.m */,
-				F4F103AE1B517F6200BCAD40 /* LICENSE.txt */,
-				F4F103AF1B517F6200BCAD40 /* README.md */,
-				F4F103B21B517F6200BCAD40 /* STPathTextField.podspec */,
 			);
 			name = STPathTextField;
 			sourceTree = "<group>";
@@ -105,7 +106,7 @@
 		F4F103831B517F0600BCAD40 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Sveinbjorn Thordarson";
 				TargetAttributes = {
 					F4F1038A1B517F0600BCAD40 = {
@@ -254,6 +255,7 @@
 				INFOPLIST_FILE = STPathTextFieldExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.sveinbjorn.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -266,6 +268,7 @@
 				INFOPLIST_FILE = STPathTextFieldExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.sveinbjorn.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -289,6 +292,7 @@
 				F4F103AA1B517F0700BCAD40 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

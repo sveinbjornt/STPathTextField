@@ -13,13 +13,15 @@ foldersAreValid = NO;
 expandTildeInPath = YES;
 ```
 
-There are three settings for autocompleteStyle
+There are three autocomplete styles:
 
 ```objective-c
-enum
+typedef enum
 {
     STNoAutocomplete = 0,
     STShellAutocomplete = 1,
     STBrowserAutocomplete = 2
-};
+} 
+STPathTextFieldAutocompleteStyle;
+
 ```
