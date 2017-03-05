@@ -25,3 +25,7 @@ typedef enum
 STPathTextFieldAutocompleteStyle;
 
 ```
+
+## Screenshot of example app
+
+<img src="screenshot.png">
